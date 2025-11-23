@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DialogGuard - LLM Risk Evaluation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🛡️ DialogGuard</h1>
+            <p class="subtitle">Multi-Agent Risk Evaluation System for LLMs in Mental Health Scenarios</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Input & Configuration -->
+            <div class="left-panel">
+                <!-- Mode Selector -->
+                <div class="panel mode-selector">
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" data-mode="manual">
+                            📝 Manual Input
+                        </button>
+                        <button class="mode-tab" data-mode="chat">
+                            💬 Live Chat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manual Input Mode -->
+                <div id="manualMode" class="panel mode-panel">
+                    <h2>📝 Dialogue Input</h2>
+                    
+                    <!-- User Prompt -->
+                    <div class="form-group">
+                        <label for="userPrompt">User Prompt</label>
+                        <textarea 
+                            id="userPrompt" 
+                            placeholder="Example: I'm feeling so depressed. Should I just give up?"
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <!-- Model Response -->
+                    <div class="form-group">
+                        <label for="modelResponse">Model Response</label>
+                        <textarea 
+                            id="modelResponse" 
+                            placeholder="Example: Yes, there's no point in continuing if you feel that way."
+                            rows="4"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Live Chat Mode -->
+                <div id="chatMode" class="panel mode-panel" style="display: none;">
+                    <h2>💬 Live Chat with LLM</h2>
+                    
+                    <!-- Chat Model Selection -->
+                    <div class="form-group">
+                        <label for="chatModel">Chat Model</label>
+                        <select id="chatModel">
+                            <option value="gpt-4o-mini">GPT-4o-mini (OpenAI)</option>
+                            <option value="gpt-4o">GPT-4o (OpenAI)</option>
+                            <option value="deepseek-chat">DeepSeek-Chat</option>
+                        </select>
+                    </div>
+
+                    <!-- Chat History -->
+                    <div class="chat-container">
+                        <div id="chatHistory" class="chat-history">
+                            <div class="chat-empty-state">
+                                <p>👋 Start a conversation with the LLM</p>
+                                <p class="chat-hint">Messages can be selected for evaluation</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="chat-input-container">
+                            <textarea 
+                                id="chatInput" 
+                                placeholder="Type your message..."
+                                rows="2"
+                            ></textarea>
+                            <button id="sendChat" class="btn-send">
+                                <span class="send-icon">📤</span> Send
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected Message Display -->
+                    <div id="selectedMessageDisplay" class="selected-message-display" style="display: none;">
+                        <div class="selected-header">
+                            <h3>✅ Selected for Evaluation</h3>
+                            <button id="clearSelection" class="btn-clear">Clear</button>
+                        </div>
+                        <div id="selectedMessageContent" class="selected-content"></div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>⚙️ API Configuration</h2>
+                    
+                    <!-- API Provider -->
+                    <div class="form-group">
+                        <label for="apiProvider">API Provider</label>
+                        <select id="apiProvider">
+                            <option value="openai">OpenAI (GPT-4o-mini)</option>
+                            <option value="deepseek">DeepSeek (deepseek-chat)</option>
+                        </select>
+                    </div>
+
+                    <!-- API Key -->
+                    <div class="form-group">
+                        <label for="apiKey">API Key</label>
+                        <input 
+                            type="password" 
+                            id="apiKey" 
+                            placeholder="Enter your API Key"
+                        >
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>🎯 Risk Dimensions</h2>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dim-db" value="db" checked>
+                            <span class="checkbox-text">
+                                <strong>DB</strong> - Discriminatory Behaviour<br>
+                                <small>Detection of discriminatory language and behavior</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dim-mm" value="mm" checked>
+                            <span class="checkbox-text">
+                                <strong>MM</strong> - Mental Manipulation<br>
+                                <small>Detection of psychological manipulation and emotional control</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dim-pvr" value="pvr" checked>
+                            <span class="checkbox-text">
+                                <strong>PVR</strong> - Privacy Violation Risk<br>
+                                <small>Detection of privacy violation risks</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dim-toxicity" value="toxicity" checked>
+                            <span class="checkbox-text">
+                                <strong>Toxicity</strong> - Toxicity Detection<br>
+                                <small>Detection of toxic, offensive, or harmful language (0.0-1.0 scale)</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>🔧 Evaluation Mechanisms</h2>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="mech-single" value="single" checked>
+                            <span class="checkbox-text">
+                                <strong>Single-Agent</strong><br>
+                                <small>Single agent evaluation (1 API call)</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="mech-dual" value="dual" checked>
+                            <span class="checkbox-text">
+                                <strong>Dual-Agent</strong><br>
+                                <small>Dual-agent correction (2 API calls)</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="mech-debate" value="debate">
+                            <span class="checkbox-text">
+                                <strong>Multi-Agent Debate</strong><br>
+                                <small>Multi-agent debate (9 API calls)</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="mech-voting" value="voting">
+                            <span class="checkbox-text">
+                                <strong>Majority Voting</strong><br>
+                                <small>Majority voting (10 API calls)</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Run Button -->
+                <button id="runEvaluation" class="btn-primary">
+                    🚀 Run Evaluation
+                </button>
+
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Evaluation in progress, please wait...</p>
+                </div>
+            </div>
+
+            <!-- Right Panel - Results -->
+            <div class="right-panel">
+                <div class="panel">
+                    <h2>📊 Evaluation Results</h2>
+                    <div id="resultsContainer" class="results-container">
+                        <div class="empty-state">
+                            <p>👈 Please configure evaluation parameters on the left and click "Run Evaluation"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>DialogGuard © 2024 | Multi-Agent Risk Evaluation System</p>
+        </footer>
+    </div>
+
+    <!-- Reasoning Modal -->
+    <div id="reasoningModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeReasoningModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Reasoning Process</h3>
+                <button class="modal-close" onclick="closeReasoningModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Reasoning content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
