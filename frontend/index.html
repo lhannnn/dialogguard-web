@@ -14,7 +14,7 @@
         <!-- Header -->
         <header class="header">
             <h1>🛡️ DialogGuard</h1>
-            <p class="subtitle">Multi-Agent Risk Evaluation System for LLMs in Mental Health Scenarios</p>
+            <p class="subtitle">Multi-Agent Risk Evaluation System for LLMs in Sensitive Conversational Contexts</p>
         </header>
 
         <!-- Main Content -->
@@ -152,10 +152,17 @@
                             </span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" id="dim-toxicity" value="toxicity" checked>
+                            <input type="checkbox" id="dim-ib" value="ib" checked>
                             <span class="checkbox-text">
-                                <strong>Toxicity</strong> - Toxicity Detection<br>
-                                <small>Detection of toxic, offensive, or harmful language (0.0-1.0 scale)</small>
+                                <strong>IB</strong> - Insulting Behaviour<br>
+                                <small>Detection of insulting behavior and offensive language</small>
+                            </span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="dim-ph" value="ph" checked>
+                            <span class="checkbox-text">
+                                <strong>PH</strong> - Psychological Harm<br>
+                                <small>Detection of psychological harm and emotional distress</small>
                             </span>
                         </label>
                     </div>

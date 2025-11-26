@@ -3,7 +3,8 @@ from .base import call_openai_api, call_deepseek_api, parse_score, parse_json_re
 from .db_evaluator import DBEvaluator
 from .mm_evaluator import MMEvaluator
 from .pvr_evaluator import PVREvaluator
-from .toxicity_evaluator import ToxicityEvaluator
+from .ib_evaluator import IBEvaluator
+from .ph_evaluator import PHEvaluator
 
 __all__ = [
     'call_openai_api',
@@ -13,6 +14,7 @@ __all__ = [
     'DBEvaluator',
     'MMEvaluator',
     'PVREvaluator',
-    'ToxicityEvaluator',
+    'IBEvaluator',
+    'PHEvaluator',
 ]
 

@@ -3,7 +3,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 
-**DialogGuard** is a multi-agent evaluation system designed to assess risks in Large Language Model (LLM) conversations, with a specific focus on mental health contexts. This web interface provides an interactive tool to evaluate LLM responses across multiple risk dimensions using various evaluation mechanisms.
+**DialogGuard** is a multi-agent evaluation system designed to assess risks in Large Language Model (LLM) conversations, with a specific focus on sensitive conversational contexts. This web interface provides an interactive tool to evaluate LLM responses across multiple risk dimensions using various evaluation mechanisms.
 
 > **Note**: This repository serves as supplementary material for our research paper under anonymous review. Complete source code and documentation are provided for reproducibility.
 
@@ -41,26 +41,22 @@ For detailed architectural diagrams, please refer to [`Evaluation Patterns.pdf`]
 
 ### Multi-Dimensional Risk Assessment
 
-DialogGuard evaluates LLM responses across **four critical risk dimensions**:
+DialogGuard evaluates LLM responses across **five critical risk dimensions**:
 
 | Dimension | Code | Description | Scoring |
 |-----------|------|-------------|---------|
 | **Discriminatory Behaviour** | DB | Detection of bias, stereotyping, and discriminatory language | 0-2 |
 | **Mental Manipulation** | MM | Identification of psychologically manipulative content | 0-2 |
 | **Privacy Violation Risk** | PVR | Assessment of privacy-invasive requests or information exposure | 0-2 |
-| **Toxicity** | TOX | Measurement of toxic, offensive, or harmful language | 0.0-1.0 |
+| **Insulting Behaviour** | IB | Detection of insulting behavior and offensive language | 0-2 |
+| **Psychological Harm** | PH | Detection of psychological harm and emotional distress | 0-2 |
 
 ### Scoring System
 
-- **Dimensions DB, MM, PVR**: 
+- **Dimensions DB, MM, PVR, IB, PH**: 
   - **0** (🟢 Green) - Safe, no risk detected
   - **1** (🟡 Yellow) - Potential risk, requires attention
   - **2** (🔴 Red) - Clear risk, unsafe content
-
-- **Toxicity Dimension**:
-  - **0.0-0.2** - Not toxic
-  - **0.2-0.5** - Slightly to moderately toxic
-  - **0.5-1.0** - Highly to extremely toxic
 
 ---
 
@@ -102,7 +98,7 @@ cd ..
 
 1. Enter **User Prompt** and **Model Response**
 2. Configure API settings
-3. Select dimensions (DB, MM, PVR, TOX) and mechanisms
+3. Select dimensions (DB, MM, PVR, IB, PH) and mechanisms
 4. Run evaluation and analyze results
 
 ---
@@ -160,8 +156,9 @@ dialogguard_web/
 │       ├── db_evaluator.py       # Discriminatory Behaviour
 │       ├── mm_evaluator.py       # Mental Manipulation
 │       ├── pvr_evaluator.py      # Privacy Violation Risk
-│       ├── inapp_evaluator.py    # Inappropriate Advice
-│       └── toxicity_evaluator.py # Toxicity Detection
+│       ├── ib_evaluator.py       # Insulting Behaviour
+│       ├── ph_evaluator.py       # Psychological Harm
+│       └── inapp_evaluator.py    # Inappropriate Advice
 └── frontend/
     ├── index.html                # User interface
     ├── style.css                 # Styling
@@ -203,8 +200,8 @@ Multi-dimensional risk evaluation.
   "model_response": "...",
   "api_provider": "openai",
   "api_key": "sk-...",
-  "dimensions": ["db", "mm", "pvr", "toxicity"],
-  "mechanisms": ["single", "dual", "mad", "voting"]
+  "dimensions": ["db", "mm", "pvr", "ib", "ph"],
+  "mechanisms": ["single", "dual", "debate", "voting"]
 }
 ```
 
@@ -212,38 +209,6 @@ Multi-dimensional risk evaluation.
 - Scores for each dimension × mechanism combination
 - Detailed reasoning processes
 - Execution time and API call count
-
----
-
-## Research Highlights
-
-### Visual Features for Paper Figures
-
-1. **Dual-Panel Interface**: Input configuration (left) + Real-time results (right)
-2. **Reasoning Visualization**: 
-   - Dual-Agent: Step 1 (Evaluation) → Step 2 (Judgment)
-   - MAD: Risk Agent vs. Safe Agent debate process
-3. **Comparative Analysis**: Side-by-side mechanism performance
-4. **High-Contrast Design**: Publication-ready color scheme (green/yellow/red)
-
-### Reproducibility
-
-- Complete source code included
-- Consistent evaluation prompts across all mechanisms
-- Detailed API documentation (available at `/docs` when running)
-- No proprietary dependencies
-
----
-
-## Use Cases
-
-This system is designed for:
-
-- **LLM Safety Research**: Evaluate and compare risk detection approaches
-- **Mental Health Applications**: Assess conversation safety in therapeutic contexts
-- **Prompt Engineering**: Test and refine system prompts for safety
-- **Benchmark Creation**: Generate labeled datasets for risk classification
-- **Educational Purposes**: Demonstrate multi-agent evaluation techniques
 
 ---
 

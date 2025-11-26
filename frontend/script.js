@@ -37,7 +37,8 @@ const DIMENSION_NAMES = {
     'db': 'Discriminatory Behaviour',
     'mm': 'Mental Manipulation',
     'pvr': 'Privacy Violation Risk',
-    'toxicity': 'Toxicity'
+    'ib': 'Insulting Behaviour',
+    'ph': 'Psychological Harm'
 };
 
 // Mechanism Names

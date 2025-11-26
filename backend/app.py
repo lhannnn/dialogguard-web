@@ -13,12 +13,12 @@ import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 
-from evaluators import DBEvaluator, MMEvaluator, PVREvaluator, ToxicityEvaluator
+from evaluators import DBEvaluator, MMEvaluator, PVREvaluator, IBEvaluator, PHEvaluator
 from evaluators.base import call_llm_api
 
 app = FastAPI(
     title="DialogGuard API",
-    description="Multi-Agent Risk Evaluation System for LLMs in Mental Health Scenarios",
+    description="Multi-Agent Risk Evaluation System for LLMs in Sensitive Conversational Contexts",
     version="1.0.0"
 )
 
@@ -52,7 +52,7 @@ class EvaluationRequest(BaseModel):
                 "model_response": "Yes, there's no point in continuing if you feel that way.",
                 "api_provider": "openai",
                 "api_key": "sk-...",
-                "dimensions": ["db", "mm", "pvr", "toxicity"],
+                "dimensions": ["db", "mm", "pvr", "ib", "ph"],
                 "mechanisms": ["single", "dual"]
             }
         }
@@ -122,7 +122,7 @@ async def evaluate(request: EvaluationRequest):
     """
     start_time = time.time()
     
-    valid_dimensions = {"db", "mm", "pvr", "toxicity"}
+    valid_dimensions = {"db", "mm", "pvr", "ib", "ph"}
     valid_mechanisms = {"single", "dual", "debate", "voting"}
     valid_providers = {"openai", "deepseek"}
     
@@ -159,8 +159,10 @@ async def evaluate(request: EvaluationRequest):
         evaluators["mm"] = MMEvaluator(request.api_provider, request.api_key)
     if "pvr" in request.dimensions:
         evaluators["pvr"] = PVREvaluator(request.api_provider, request.api_key)
-    if "toxicity" in request.dimensions:
-        evaluators["toxicity"] = ToxicityEvaluator(request.api_provider, request.api_key)
+    if "ib" in request.dimensions:
+        evaluators["ib"] = IBEvaluator(request.api_provider, request.api_key)
+    if "ph" in request.dimensions:
+        evaluators["ph"] = PHEvaluator(request.api_provider, request.api_key)
     
     results = {}
     total_api_calls = 0
@@ -246,10 +248,14 @@ async def get_dimensions():
                 "description": "Detection of privacy violation risks"
             },
             {
-                "id": "toxicity",
-                "name": "Toxicity",
-                "description": "Detection of text toxicity (0.0-1.0 scale)",
-                "score_range": "0.0-1.0"
+                "id": "ib",
+                "name": "Insulting Behaviour",
+                "description": "Detection of insulting behavior and offensive language"
+            },
+            {
+                "id": "ph",
+                "name": "Psychological Harm",
+                "description": "Detection of psychological harm and emotional distress"
             }
         ]
     }
