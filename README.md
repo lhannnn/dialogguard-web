@@ -158,7 +158,6 @@ dialogguard_web/
 │       ├── pvr_evaluator.py      # Privacy Violation Risk
 │       ├── ib_evaluator.py       # Insulting Behaviour
 │       ├── ph_evaluator.py       # Psychological Harm
-│       └── inapp_evaluator.py    # Inappropriate Advice
 └── frontend/
     ├── index.html                # User interface
     ├── style.css                 # Styling
